@@ -10,6 +10,7 @@ IMG_WIDTH, IMG_HEIGHT = 224, 224
 SOURCE_IMAGE_DIRECTORY = 'D:\\BMW\\e60\\original'
 CAR_DIRECTORY = 'D:\\BMW\\e60\\car'
 NO_CAR_DIRECTORY = 'D:\\BMW\\e60\\no_car'
+CLASSIFY_RATIO = 0.95
 
 
 def predict_single(model, image_path):
@@ -28,9 +29,9 @@ def predict_directory(source_directory):
         print('Processing file nr: ' + str(index))
         try:
             classes = predict_single(model, source_directory + '/' + picture_file)
-            if classes[0][0] > 0.99:
+            if classes[0][0] > CLASSIFY_RATIO:
                 os.rename(source_directory + '/' + picture_file, NO_CAR_DIRECTORY + '/' + picture_file)
-            if classes[0][0] < 0.1:
+            if classes[0][1] > CLASSIFY_RATIO:
                 os.rename(source_directory + '/' + picture_file, CAR_DIRECTORY + '/' + picture_file)
         except:
             print('Some exception')
@@ -38,4 +39,5 @@ def predict_directory(source_directory):
 
 if __name__ == '__main__':
     model = load_model(MODEL_NAME)
-    predict_single(model, 'C:\\Users\\wieczoma\\Desktop\\BMW\\car_photos_224x224\\train\\outside\\00001.jpg')
+    predict_directory(SOURCE_IMAGE_DIRECTORY)
+    #predict_single(model, 'C:\\Users\\wieczoma\\Desktop\\BMW\\car_photos_224x224\\train\\outside\\00001.jpg')
