@@ -4,8 +4,7 @@ import os
 from PIL import Image
 from resizeimage import resizeimage
 
-ORIGINAL_FOLDER = 'C:\\car_photos_224x224\\train'
-RESIZED_FOLDER = 'C:\\car_photos_224x224\\train'
+ORIGINAL_FOLDER = 'C:\\Private\\BMW\\car_photos\\'
 
 HEIGHT = 224
 WIDTH = 224
