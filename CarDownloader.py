@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen, URLopener
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger('log')
 log.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler('e60.log')
+file_handler = logging.FileHandler('downloading_car_photos.log')
 file_handler.setLevel(logging.DEBUG)
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
