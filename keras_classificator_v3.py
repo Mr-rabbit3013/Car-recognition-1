@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import matplotlib.pyplot as plt
 from keras.applications import ResNet50
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.optimizers import Adam
@@ -12,7 +13,7 @@ BATCH_SIZE = 8
 EPOCHS = 1000
 
 
-def training():
+def prepare_data():
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
         rotation_range=20,
@@ -40,6 +41,32 @@ def training():
         batch_size=BATCH_SIZE,
         class_mode='categorical',
         shuffle=True)
+    return train_generator, validation_generator
+
+
+def show_history(history):
+    # list all data in history
+    print(history.history.keys())
+    # summarize history for accuracy
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    # summarize history for loss
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+
+
+def training():
+    train_generator, validation_generator = prepare_data()
 
     model = ResNet50(include_top=True,
                      weights=None,
