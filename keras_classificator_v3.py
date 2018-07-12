@@ -8,7 +8,6 @@ from keras.preprocessing.image import ImageDataGenerator
 IMG_WIDTH, IMG_HEIGHT = 224, 224
 TRAIN_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\train'
 VALIDATION_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\validation'
-NUM_CLASSES = 2
 BATCH_SIZE = 8
 EPOCHS = 1000
 
@@ -42,10 +41,11 @@ def training():
         class_mode='categorical',
         shuffle=True)
 
-    model = ResNet50(weights=None, input_shape=(IMG_WIDTH, IMG_HEIGHT, 3), classes=NUM_CLASSES)
+    model = ResNet50(include_top=True,
+                     weights=None,
+                     input_shape=(IMG_WIDTH, IMG_HEIGHT, 3),
+                     classes=train_generator.class_indices.items().__len__())
     model.summary()
-
-    # Compile the model
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adam(lr=0.001),
                   metrics=['accuracy'])
@@ -53,7 +53,6 @@ def training():
     early_stopping = EarlyStopping(patience=10)
     checkpointer = ModelCheckpoint(filepath='filter_network_best.h5', verbose=2, save_best_only=True)
 
-    # Train the model
     model.fit_generator(
         train_generator,
         steps_per_epoch=train_generator.samples / train_generator.batch_size,
