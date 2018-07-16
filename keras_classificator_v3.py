@@ -28,13 +28,7 @@ def prepare_data():
         class_mode='categorical',
         shuffle=True)
 
-    validation_datagen = ImageDataGenerator(
-        rescale=1. / 255,
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        horizontal_flip=True,
-        fill_mode='nearest')
+    validation_datagen = ImageDataGenerator(rescale=1. / 255)
     validation_generator = validation_datagen.flow_from_directory(
         VALIDATION_DATA_DIR,
         target_size=(IMG_WIDTH, IMG_HEIGHT),
