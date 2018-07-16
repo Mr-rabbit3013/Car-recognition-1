@@ -9,6 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 IMG_WIDTH, IMG_HEIGHT = 224, 224
 TRAIN_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\train'
 VALIDATION_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\validation'
+TEST_DATA_DIR = 'C:\\Private\\BMW\\224x224\\test'
 BATCH_SIZE = 8
 EPOCHS = 1000
 
@@ -35,6 +36,15 @@ def prepare_data():
         batch_size=BATCH_SIZE,
         class_mode='categorical',
         shuffle=True)
+
+    # test_datagen = ImageDataGenerator(rescale=1./255)
+    # test_generator = test_datagen.flow_from_directory(
+    #     TEST_DATA_DIR,
+    #     target_size=(IMG_WIDTH, IMG_HEIGHT),
+    #     batch_size=BATCH_SIZE,
+    #     class_mode='categorical',
+    #     shuffle=True)
+    # return train_generator, validation_generator, test_generator
     return train_generator, validation_generator
 
 
@@ -47,7 +57,7 @@ def show_history(history):
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.legend(['train', 'validation'], loc='upper left')
     plt.show()
     # summarize history for loss
     plt.plot(history.history['loss'])
@@ -55,12 +65,13 @@ def show_history(history):
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.legend(['train', 'validation'], loc='upper left')
     plt.show()
 
 
 def training():
     train_generator, validation_generator = prepare_data()
+    #train_generator, validation_generator, test_generator = prepare_data()
 
     model = ResNet50(include_top=True,
                      weights=None,
@@ -74,7 +85,7 @@ def training():
     early_stopping = EarlyStopping(patience=10)
     checkpointer = ModelCheckpoint(filepath='filter_network_best.h5', verbose=2, save_best_only=True)
 
-    model.fit_generator(
+    history = model.fit_generator(
         train_generator,
         steps_per_epoch=train_generator.samples / train_generator.batch_size,
         epochs=EPOCHS,
@@ -82,8 +93,10 @@ def training():
         validation_data=validation_generator,
         validation_steps=validation_generator.samples / validation_generator.batch_size)
 
-    # Save the model
+    #evaluate_scores = model.evaluate_generator(generator=test_generator)
+
     model.save('filter_network_final.h5')
+    show_history(history)
 
 
 if __name__ == '__main__':
