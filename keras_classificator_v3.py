@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import matplotlib.pyplot as plt
 from keras.applications import ResNet50
+from keras.applications.resnet50 import preprocess_input
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
@@ -16,7 +17,7 @@ EPOCHS = 1000
 
 def prepare_data():
     train_datagen = ImageDataGenerator(
-        rescale=1. / 255,
+        preprocessing_function=preprocess_input,
         rotation_range=20,
         width_shift_range=0.2,
         height_shift_range=0.2,
@@ -29,7 +30,7 @@ def prepare_data():
         class_mode='categorical',
         shuffle=True)
 
-    validation_datagen = ImageDataGenerator(rescale=1. / 255)
+    validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
     validation_generator = validation_datagen.flow_from_directory(
         VALIDATION_DATA_DIR,
         target_size=(IMG_WIDTH, IMG_HEIGHT),
