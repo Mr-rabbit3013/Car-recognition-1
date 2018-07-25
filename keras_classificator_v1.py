@@ -56,7 +56,7 @@ def training():
                   metrics=['acc'])
 
     early_stopping = EarlyStopping(patience=10)
-    checkpointer = ModelCheckpoint('conv_network_best.h5', verbose=1, save_best_only=True)
+    checkpointer = ModelCheckpoint('conv_network_best.h5', verbose=0, save_best_only=True)
 
     model.fit_generator(
         train_generator,
