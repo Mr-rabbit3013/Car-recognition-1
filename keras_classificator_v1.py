@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import matplotlib.pyplot as plt
 from keras.applications import VGG19
+from keras.callbacks import CSVLogger
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Flatten, Dense, Dropout
 from keras.models import Sequential
@@ -96,11 +97,13 @@ def training():
     early_stopping = EarlyStopping(patience=10)
     checkpointer = ModelCheckpoint('conv_network_best.h5', verbose=0, save_best_only=True)
 
+    csv_logger = CSVLogger('Training_log.csv', append=True, separator=';')
+
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=train_generator.samples / train_generator.batch_size,
         epochs=EPOCHS,
-        callbacks=[early_stopping, checkpointer],
+        callbacks=[early_stopping, checkpointer, csv_logger],
         validation_data=validation_generator,
         validation_steps=validation_generator.samples / validation_generator.batch_size)
 
