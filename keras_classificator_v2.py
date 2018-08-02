@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from keras import Sequential
 from keras.applications import ResNet50
 from keras.applications.resnet50 import preprocess_input
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger
 from keras.layers import Flatten, Dense, Dropout, AveragePooling2D
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
@@ -100,11 +100,13 @@ def training():
     early_stopping = EarlyStopping(patience=10)
     checkpointer = ModelCheckpoint(filepath='car_resNet50_best.h5', verbose=0, save_best_only=True)
 
+    csv_logger = CSVLogger('ResNet50_training_log.csv', append=True, separator=';')
+
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=train_generator.samples / train_generator.batch_size,
         epochs=EPOCHS,
-        callbacks=[early_stopping, checkpointer],
+        callbacks=[early_stopping, checkpointer, csv_logger],
         validation_data=validation_generator,
         validation_steps=validation_generator.samples / validation_generator.batch_size)
 
