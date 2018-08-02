@@ -5,7 +5,7 @@ from keras import Sequential
 from keras.applications import ResNet50
 from keras.applications.resnet50 import preprocess_input
 from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger
-from keras.layers import Flatten, Dense, Dropout, AveragePooling2D
+from keras.layers import Dense, Flatten, AveragePooling2D
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
@@ -88,8 +88,6 @@ def training():
     model.add(conv_network)
     model.add(AveragePooling2D((7, 7), name='avg_pool'))
     model.add(Flatten())
-    model.add(Dense(1024, activation='relu'))
-    model.add(Dropout(0.5))
     model.add(Dense(train_generator.class_indices.items().__len__(), activation='softmax'))
     model.summary()
     model.compile(loss='categorical_crossentropy',
