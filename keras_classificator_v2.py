@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import os
 import matplotlib.pyplot as plt
 from keras import Sequential
 from keras.applications import ResNet50
@@ -117,5 +116,4 @@ def training():
 
 
 if __name__ == '__main__':
-    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
     training()
