@@ -10,6 +10,33 @@ HEIGHT = 224
 WIDTH = 224
 
 
+def square(source, target):
+    f = open(source, 'r+b')
+    image = Image.open(f)
+    image_width, image_height = image.size
+    try:
+        if image_height == image_width:
+            return
+        print('Squaring image: ' + str(source))
+        image = Image.open(source)
+        if image_width < image_height:
+            up_difference = int((image_height - image_width) / 2)
+            down_difference = round((image_height - image_width) / 2)
+            box = (0, up_difference, image_width, down_difference + image_width)
+            cropped = image.crop(box)
+            cropped.save(target)
+        if image_width > image_height:
+            left_difference = int((image_width - image_height) / 2)
+            right_difference = int((image_width - image_height) / 2)
+            box = (left_difference, 0, right_difference + image_height, image_height)
+            cropped = image.crop(box)
+            cropped.save(target)
+    except Exception as exception:
+        print('Unexpected exception: ' + str(exception))
+    image.close()
+    f.close()
+
+
 def resize(source, target):
     if not os.path.exists(target):
         os.makedirs(target)
