@@ -2,12 +2,13 @@ import glob
 import os
 
 from PIL import Image
-from resizeimage import resizeimage
 
 ORIGINAL_FOLDER = 'C:\\Private\\BMW\\car_photos\\'
 
 HEIGHT = 224
 WIDTH = 224
+
+TOLERANCE_RATIO = 0.10  # range [0 - 1]
 
 
 def square(source, target):
@@ -54,7 +55,7 @@ def single_resize(source, target):
     f = open(source, 'r+b')
     image = Image.open(f)
     image_width, image_height = image.size
-    if image_width < WIDTH or image_height < HEIGHT:
+    if image_width * TOLERANCE_RATIO + image_width < WIDTH or image_height * TOLERANCE_RATIO + image_height < HEIGHT:
         print('Removing file because is too small: ' + str(source))
         image.close()
         f.close()
@@ -62,8 +63,8 @@ def single_resize(source, target):
         return
     try:
         print('Resize file: ' + str(source))
-        cover = resizeimage.resize_cover(image, [HEIGHT, WIDTH])
-        cover.save(target, image.format)
+        resized = image.resize((HEIGHT, WIDTH))
+        resized.save(target, image.format)
     except Exception as exception:
         print('Unexpected exception: ' + str(exception))
     image.close()
