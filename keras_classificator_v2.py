@@ -9,10 +9,8 @@ from keras.layers import Dense, Flatten, AveragePooling2D
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
-
-IMG_WIDTH, IMG_HEIGHT = 224, 224
+TARGET_IMAGE_SIZE = (224, 224)
 TRAIN_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\train'
-VALIDATION_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\validation'
 TEST_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\test'
 BATCH_SIZE = 8
 EPOCHS = 100
@@ -21,6 +19,9 @@ EPOCHS = 100
 def prepare_data():
     train_datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input,
+        samplewise_center=True,
+        samplewise_std_normalization=True,
+        validation_split=0.2,
         rotation_range=20,
         width_shift_range=0.2,
         height_shift_range=0.2,
@@ -28,17 +29,17 @@ def prepare_data():
         fill_mode='nearest')
     train_generator = train_datagen.flow_from_directory(
         TRAIN_DATA_DIR,
-        target_size=(IMG_WIDTH, IMG_HEIGHT),
+        target_size=TARGET_IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode='categorical',
+        subset='training',
         shuffle=True)
-
-    validation_datagen = ImageDataGenerator(preprocessing_function=preprocess_input)
-    validation_generator = validation_datagen.flow_from_directory(
-        VALIDATION_DATA_DIR,
-        target_size=(IMG_WIDTH, IMG_HEIGHT),
+    validation_generator = train_datagen.flow_from_directory(
+        TRAIN_DATA_DIR,
+        target_size=TARGET_IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode='categorical',
+        subset='validation',
         shuffle=True)
 
     # test_datagen = ImageDataGenerator(rescale=1./255)
@@ -79,7 +80,7 @@ def training():
 
     conv_network = ResNet50(include_top=False,
                             weights='imagenet',
-                            input_shape=(IMG_WIDTH, IMG_HEIGHT, 3))
+                            input_shape=(TARGET_IMAGE_SIZE, 3))
 
     for layer in conv_network.layers[:-3]:
         layer.trainable = False
