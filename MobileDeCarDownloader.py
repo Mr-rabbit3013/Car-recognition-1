@@ -1,6 +1,7 @@
 import logging
 import re
 from urllib.request import URLopener
+from pathlib import Path
 
 import requests
 from fake_useragent import UserAgent
@@ -98,6 +99,8 @@ def save_file_on_disc_from(url, directory):
         testfile = URLopener()
         url = str(url).replace("\\u003d", '=')
         filename = directory + str(url).split("00")[1].replace("/", "")
+        if Path(filename).exists():
+            return
         testfile.retrieve(url, filename)
     except Exception as exception:
         log.error('Unexpected exception: ' + str(exception))
