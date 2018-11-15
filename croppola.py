@@ -1,4 +1,4 @@
-import os, requests
+import os, requests, time
 from PIL import Image
 
 ORIGINAL_FOLDER = 'D:\\original'
@@ -29,6 +29,7 @@ def crop(source, target):
             f.write(res.content)
         else:
             print('Error ' + str(res.status_code) + ' ' + str(res.reason))
+            time.sleep(60)
 
 
 def single_crop(source, target):
