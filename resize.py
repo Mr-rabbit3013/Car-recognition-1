@@ -76,6 +76,11 @@ def resize_directory_recursively(source):
         resize(directory, directory)
 
 
+def delete_if_too_small_recursively(directory, size):
+    for dir in glob.iglob(directory + '/*/'):
+        delete_if_too_small(dir, size)
+
+
 def delete_if_too_small(directory, size):
     count = 0
     for picture_file in os.listdir(directory):
@@ -84,7 +89,7 @@ def delete_if_too_small(directory, size):
         image = Image.open(f)
         image_width, image_height = image.size
         if image_width < size or image_height < size:
-            print(f'Deleting file, size {image_height} x {image_height}     {str(file)}')
+            print(f'Deleting file, size {image_width} x {image_height}     {str(file)}')
             image.close()
             f.close()
             os.remove(file)
@@ -94,4 +99,4 @@ def delete_if_too_small(directory, size):
 
 if __name__ == '__main__':
     #resize_directory_recursively(ORIGINAL_FOLDER)
-    delete_if_too_small(ORIGINAL_FOLDER, 512)
+    delete_if_too_small_recursively(ORIGINAL_FOLDER, 512)
