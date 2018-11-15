@@ -3,7 +3,7 @@ import os
 
 from PIL import Image
 
-ORIGINAL_FOLDER = 'C:\\Private\\BMW\\car_photos\\'
+ORIGINAL_FOLDER = 'C:\\Users\\Mateusz\\Desktop\\f32\\'
 
 HEIGHT = 224
 WIDTH = 224
@@ -76,5 +76,22 @@ def resize_directory_recursively(source):
         resize(directory, directory)
 
 
+def delete_if_too_small(directory, size):
+    count = 0
+    for picture_file in os.listdir(directory):
+        file = directory + picture_file
+        f = open(file, 'r+b')
+        image = Image.open(f)
+        image_width, image_height = image.size
+        if image_width < size or image_height < size:
+            print(f'Deleting file, size {image_height} x {image_height}     {str(file)}')
+            image.close()
+            f.close()
+            os.remove(file)
+            count += 1
+    print(f'Removed {count} files')
+
+
 if __name__ == '__main__':
-    resize_directory_recursively(ORIGINAL_FOLDER)
+    #resize_directory_recursively(ORIGINAL_FOLDER)
+    delete_if_too_small(ORIGINAL_FOLDER, 512)
