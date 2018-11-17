@@ -108,6 +108,7 @@ def training():
     # evaluate_scores = model.evaluate_generator(generator=test_generator)
 
     model.save('car_resNet50_final.h5')
+    model.sample_weights('resNet50_weights')
     show_history(history)
 
 
