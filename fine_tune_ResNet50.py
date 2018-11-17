@@ -3,24 +3,21 @@ from __future__ import print_function
 import matplotlib.pyplot as plt
 from keras import Sequential
 from keras.applications import ResNet50
-from keras.applications.resnet50 import preprocess_input
 from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger
-from keras.layers import Dense, Flatten, AveragePooling2D
+from keras.layers import Dense, AveragePooling2D, Flatten
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
-TARGET_IMAGE_SIZE = (224, 224)
-TRAIN_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\train'
-TEST_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\test'
+IMAGE_SIZE = 224
+TARGET_IMAGE_SIZE = (IMAGE_SIZE, IMAGE_SIZE)
+TRAIN_DATA_DIR = 'D:\\BMW photos\\car_photos'
+#TEST_DATA_DIR = 'C:\\Private\\BMW\\car_photos_224x224\\test'
 BATCH_SIZE = 8
 EPOCHS = 100
 
 
 def prepare_data():
     train_datagen = ImageDataGenerator(
-        preprocessing_function=preprocess_input,
-        samplewise_center=True,
-        samplewise_std_normalization=True,
         validation_split=0.2,
         rotation_range=20,
         width_shift_range=0.2,
@@ -78,15 +75,15 @@ def training():
     train_generator, validation_generator = prepare_data()
     # train_generator, validation_generator, test_generator = prepare_data()
 
-    conv_network = ResNet50(include_top=False,
+    resnet50_network = ResNet50(include_top=False,
                             weights='imagenet',
-                            input_shape=(TARGET_IMAGE_SIZE, 3))
+                            input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3))
 
-    for layer in conv_network.layers[:-3]:
+    for layer in resnet50_network.layers[:-3]:
         layer.trainable = False
 
     model = Sequential()
-    model.add(conv_network)
+    model.add(resnet50_network)
     model.add(AveragePooling2D((7, 7), name='avg_pool'))
     model.add(Flatten())
     model.add(Dense(train_generator.class_indices.items().__len__(), activation='softmax'))
