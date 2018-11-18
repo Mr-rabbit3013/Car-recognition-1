@@ -24,9 +24,10 @@ def predict_single(model, image_path):
 def predict_directory(source_directory):
     model = load_model(MODEL_NAME)
     index = 0
+    files_number = len(os.listdir(source_directory))
     for picture_file in os.listdir(source_directory):
         index += 1
-        print('Processing file nr: ' + str(index))
+        print(f'Processing file {str(index)}/{files_number}')
         try:
             classes = predict_single(model, source_directory + '/' + picture_file)
             if classes[0][0] > CLASSIFY_RATIO:
